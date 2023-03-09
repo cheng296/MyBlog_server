@@ -10,7 +10,16 @@ const UserType = {
     password: String,
     gender: String
 }
+const BlogType = {
+    title: String,
+    category: String,
+    content: String,
+    username: String,
+    state: Number,
+}
+
 const UserModel = mongoose.model("user", new mongoose.Schema(UserType))
+const BlogModel = mongoose.model("blog", new mongoose.Schema(BlogType))
 
 const app = express()
 app.use(cors())
@@ -51,9 +60,22 @@ app.get('/verify', (req, res) => {
         } else {
             res.send({ ok: 0 })
         }
-    }else {
+    } else {
         res.send({ ok: 0 })
     }
+})
+app.post('/add', (req, res) => {
+    const { title, category, content, username, state } = req.body
+    BlogModel.create({
+        title, category, content, username, state
+    })
+    res.send({ ok: 1 })
+})
+app.get('/getdraft', (req, res) => {
+    const {state} = req.query
+    BlogModel.find({state:1}).then(data=>{
+        res.send(data)
+    })
 })
 app.listen(5000, () => {
     console.log("服务已启动，5000端口监听中...")
