@@ -72,8 +72,14 @@ app.post('/add', (req, res) => {
     res.send({ ok: 1 })
 })
 app.get('/getdraft', (req, res) => {
-    const {state} = req.query
-    BlogModel.find({state:1}).then(data=>{
+    const { state, username} = req.query
+    BlogModel.find({ state: 1 ,username}).then(data => {
+        res.send(data)
+    })
+})
+app.get('/blogPreview', (req, res) => {
+    const { _id } = req.query
+    BlogModel.find({ _id }).then(data => {
         res.send(data)
     })
 })
