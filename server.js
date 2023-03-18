@@ -1,7 +1,7 @@
 const express = require('express')
 const cors = require("cors")
 const mongoose = require('mongoose')
-const JWT = require('./JWT')
+const JWT = require('./models/JWT')
 
 mongoose.connect("mongodb://zhaozhi:zhaozhi123.@8.130.107.163:27017/blog?authSource=admin", { useNewUrlParser: true, useUnifiedTopology: true }).then(res => {
     console.log( '连接成功');
