@@ -3,7 +3,11 @@ const cors = require("cors")
 const mongoose = require('mongoose')
 const JWT = require('./JWT')
 
-mongoose.connect("mongodb://127.0.0.1:27017/blog")
+mongoose.connect("mongodb://zhaozhi:zhaozhi123.@8.130.107.163:27017/blog?authSource=admin", { useNewUrlParser: true, useUnifiedTopology: true }).then(res => {
+    console.log( '连接成功');
+}).catch((err) => {
+    console.log('连接失败');
+});
 
 const UserType = {
     username: String,
