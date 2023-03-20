@@ -3,7 +3,11 @@ const cors = require("cors")
 const mongoose = require('mongoose')
 const JWT = require('./JWT')
 
-mongoose.connect("mongodb://127.0.0.1:27017/blog")
+mongoose.connect("mongodb://cxm:cheng296@8.130.107.163:27017/blog?authSource=admin",{useNewUrlParser: true,useUnifiedTopology: true}).then(res=>{
+    console.log('连接成功');
+}).catch((err)=>{
+    console.log('连接失败');
+})
 
 const UserType = {
     username: String,
@@ -77,9 +81,40 @@ app.get('/getdraft', (req, res) => {
         res.send(data)
     })
 })
+app.get('/blogPublished', (req, res) => {
+    const { state, username} = req.query
+    BlogModel.find({ state ,username}).then(data => {
+        res.send(data)
+    })
+})
 app.get('/blogPreview', (req, res) => {
     const { _id } = req.query
     BlogModel.find({ _id }).then(data => {
+        res.send(data)
+    })
+})
+app.patch('/blogPublish',(req,res)=>{
+    const { _id } = req.query
+    const {state} = req.body
+    BlogModel.updateOne({_id},{state}).then(data=>{
+        res.send({ok:1})
+    })
+})
+app.delete('/blogDelete',(req,res)=>{
+    const { _id } = req.query
+    BlogModel.deleteOne({_id}).then(data=>{
+        res.send({ok:1})
+    })
+})
+app.patch('/blogupdate',(req,res)=>{
+    const { _id } = req.query
+    const {title,category,content,username,state} = req.body
+    BlogModel.updateOne({_id},{title,category,content,username,state}).then(data=>{
+        res.send({ok:1})
+    })
+})
+app.get('/getAllBlog',(req,res)=>{
+    BlogModel.find().then(data=>{
         res.send(data)
     })
 })
