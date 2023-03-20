@@ -3,6 +3,7 @@ const cors = require("cors")
 const mongoose = require('mongoose')
 const blogManage = require('./router/blogManage');
 const accountManage = require('./router/accountManage');
+const movie = require('./router/movie');
 const app = express()
 
 mongoose.connect("mongodb://cxm:cheng296@8.130.107.163:27017/blog?authSource=admin",{useNewUrlParser: true,useUnifiedTopology: true}).then(res=>{
@@ -18,6 +19,8 @@ app.use(express.json())
 app.use('/accountManage',accountManage)
 
 app.use('/blogManage',blogManage)
+
+app.use('/movie',movie)
 
 app.listen(5000, () => {
     console.log("服务已启动,5000端口监听中...")

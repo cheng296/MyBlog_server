@@ -9,7 +9,7 @@ const BlogType = {
     username: String,
     state: Number,
 };
-const BlogModel = mongoose.model("blog", new mongoose.Schema(BlogType))
+const BlogModel = mongoose.model("blogs", new mongoose.Schema(BlogType))
 
 router.post('/add', (req, res) => {
     const { title, category, content, username, state } = req.body
@@ -64,7 +64,7 @@ router.patch('/blogupdate',(req,res)=>{
 });
 
 router.get('/getAllBlog',(req,res)=>{
-    BlogModel.find().then(data=>{
+    BlogModel.find().then(data => {
         res.send(data)
     })
 });

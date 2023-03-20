@@ -8,7 +8,7 @@ const UserType = {
     password: String,
     gender: String
 }
-const UserModel = mongoose.model("user", new mongoose.Schema(UserType))
+const UserModel = mongoose.model("users", new mongoose.Schema(UserType))
 
 router.post('/login', (req, res) => {
     const { username, password } = req.body
