@@ -26,10 +26,17 @@ router.post('/login', (req, res) => {
 
 router.post('/register', (req, res) => {
     const { username, password, gender } = req.body
-    UserModel.create({
-        username, password, gender
+    UserModel.find({ username }).then(data => {
+        if (data.length === 0) {
+            UserModel.create({
+                username, password, gender
+            })
+            res.send({ ok: 1 })
+        } else {
+            res.send({ ok: 0 })
+        }
     })
-    res.send({ ok: 1 })
+
 })
 
 //验证token
