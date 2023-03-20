@@ -1,7 +1,9 @@
 const express = require('express')
 const cors = require("cors")
 const mongoose = require('mongoose')
-const JWT = require('./JWT')
+const blogManage = require('./router/blogManage');
+const accountManage = require('./router/accountManage');
+const app = express()
 
 mongoose.connect("mongodb://cxm:cheng296@8.130.107.163:27017/blog?authSource=admin",{useNewUrlParser: true,useUnifiedTopology: true}).then(res=>{
     console.log('连接成功');
@@ -9,115 +11,14 @@ mongoose.connect("mongodb://cxm:cheng296@8.130.107.163:27017/blog?authSource=adm
     console.log('连接失败');
 })
 
-const UserType = {
-    username: String,
-    password: String,
-    gender: String
-}
-const BlogType = {
-    title: String,
-    category: String,
-    content: String,
-    username: String,
-    state: Number,
-}
-
-const UserModel = mongoose.model("user", new mongoose.Schema(UserType))
-const BlogModel = mongoose.model("blog", new mongoose.Schema(BlogType))
-
-const app = express()
 app.use(cors())
+
 app.use(express.json())
 
-app.post('/login', (req, res) => {
-    const { username, password } = req.body
-    UserModel.find({ username, password }).then(data => {
-        if (data.length === 0) {
-            res.send({ ok: 0 })
-        } else {
-            const token = JWT.generate({ username }, '1h')
-            res.header('Access-Control-Expose-Headers', 'Authorization')
-            res.header("Authorization", token)
-            res.send({ ok: 1 })
-        }
-    })
-})
-app.post('/register', (req, res) => {
-    const { username, password, gender } = req.body
-    UserModel.create({
-        username, password, gender
-    })
-    res.send({ ok: 1 })
-})
-//验证token
-app.get('/verify', (req, res) => {
-    const token = req.headers['authorization']?.split(" ")[1]
-    if (token) {
-        const payload = JWT.verify(token)
-        if (payload) {
-            const newToken = JWT.generate({
-                username: payload.username
-            }, "1d")
-            res.header('Access-Control-Expose-Headers', 'Authorization')
-            res.header("Authorization", newToken)
-            res.send({ ok: 1 })
-        } else {
-            res.send({ ok: 0 })
-        }
-    } else {
-        res.send({ ok: 0 })
-    }
-})
-app.post('/add', (req, res) => {
-    const { title, category, content, username, state } = req.body
-    BlogModel.create({
-        title, category, content, username, state
-    })
-    res.send({ ok: 1 })
-})
-app.get('/getdraft', (req, res) => {
-    const { state, username} = req.query
-    BlogModel.find({ state: 1 ,username}).then(data => {
-        res.send(data)
-    })
-})
-app.get('/blogPublished', (req, res) => {
-    const { state, username} = req.query
-    BlogModel.find({ state ,username}).then(data => {
-        res.send(data)
-    })
-})
-app.get('/blogPreview', (req, res) => {
-    const { _id } = req.query
-    BlogModel.find({ _id }).then(data => {
-        res.send(data)
-    })
-})
-app.patch('/blogPublish',(req,res)=>{
-    const { _id } = req.query
-    const {state} = req.body
-    BlogModel.updateOne({_id},{state}).then(data=>{
-        res.send({ok:1})
-    })
-})
-app.delete('/blogDelete',(req,res)=>{
-    const { _id } = req.query
-    BlogModel.deleteOne({_id}).then(data=>{
-        res.send({ok:1})
-    })
-})
-app.patch('/blogupdate',(req,res)=>{
-    const { _id } = req.query
-    const {title,category,content,username,state} = req.body
-    BlogModel.updateOne({_id},{title,category,content,username,state}).then(data=>{
-        res.send({ok:1})
-    })
-})
-app.get('/getAllBlog',(req,res)=>{
-    BlogModel.find().then(data=>{
-        res.send(data)
-    })
-})
+app.use('/accountManage',accountManage)
+
+app.use('/blogManage',blogManage)
+
 app.listen(5000, () => {
-    console.log("服务已启动，5000端口监听中...")
+    console.log("服务已启动,5000端口监听中...")
 })
