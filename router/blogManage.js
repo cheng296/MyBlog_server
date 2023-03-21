@@ -69,4 +69,11 @@ router.get('/getAllBlog',(req,res)=>{
     })
 });
 
+router.get('/getCategoryBlog',(req,res)=>{
+    const { category } = req.query
+    BlogModel.find({category}).then(data => {
+        res.send(data)
+    })
+})
+
 module.exports = router;
