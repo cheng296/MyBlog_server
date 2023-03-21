@@ -8,13 +8,14 @@ const BlogType = {
     content: String,
     username: String,
     state: Number,
+    imgURL: String
 };
 const BlogModel = mongoose.model("blogs", new mongoose.Schema(BlogType))
 
 router.post('/add', (req, res) => {
-    const { title, category, content, username, state } = req.body
+    const { title, category, content, username, state, imgURL } = req.body
     BlogModel.create({
-        title, category, content, username, state
+        title, category, content, username, state, imgURL
     })
     res.send({ ok: 1 })
 });
@@ -64,14 +65,15 @@ router.patch('/blogupdate',(req,res)=>{
 });
 
 router.get('/getAllBlog',(req,res)=>{
-    BlogModel.find().then(data => {
+    const {state} = req.query
+    BlogModel.find({state}).then(data => {
         res.send(data)
     })
 });
 
 router.get('/getCategoryBlog',(req,res)=>{
-    const { category } = req.query
-    BlogModel.find({category}).then(data => {
+    const { category,state } = req.query
+    BlogModel.find({category,state}).then(data => {
         res.send(data)
     })
 })
